@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Unit 5 – The Breakfast Quest | Online Practice</title>
+  <style>
+    :root{
+      --bg1:#06142a;
+      --bg2:#0b2a4a;
+      --card:#0f1f3b;
+      --stroke:rgba(255,255,255,.10);
+      --text:#e9f0ff;
+      --muted:rgba(233,240,255,.72);
+      --accent:#42d3ff;
+      --good:#43f18a;
+      --bad:#ff6b6b;
+      --btn:#142b52;
+      --btnHover:#18335f;
+      --pill:rgba(255,255,255,.08);
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
+      --radius:22px;
+      --tile: rgba(255,255,255,.06);
+      --tileStroke: rgba(255,255,255,.14);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: "Century Gothic", "Tw Cen MT", "Trebuchet MS", Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(66,211,255,.18), transparent 55%),
+        radial-gradient(900px 600px at 85% 15%, rgba(124,92,255,.18), transparent 55%),
+        radial-gradient(900px 700px at 50% 110%, rgba(255,199,66,.10), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:22px;
+    }
+
+    .wrap{ width:min(1100px, 96vw); }
+
+    .topbar{
+      background: rgba(255,255,255,.05);
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      padding:16px 18px;
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .brand{ display:flex; gap:14px; align-items:center; }
+    .logo{
+      width:54px; height:54px; border-radius:14px;
+      background: rgba(255,255,255,.06);
+      border:1px solid var(--stroke);
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden; flex:0 0 auto;
+    }
+    .logo img{ width:100%; height:100%; object-fit:contain; padding:8px; }
+
+    .titleblock h1{
+      margin:0;
+      font-size: clamp(20px, 2.4vw, 30px);
+      letter-spacing:.2px;
+    }
+    .titleblock .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .stats{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .pill{
+      background: var(--pill);
+      border:1px solid var(--stroke);
+      border-radius: 999px;
+      padding:10px 12px;
+      font-size:14px;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .pill strong{color:var(--text)}
+
+    .grid{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns: 1.8fr 1fr;
+      gap:16px;
+    }
+    @media (max-width: 900px){ .grid{grid-template-columns:1fr} }
+
+    .card{
+      background: rgba(15,31,59,.76);
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .cardHeader{
+      padding:18px 18px 12px;
+      border-bottom:1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0));
+    }
+
+    .cardHeader .kicker{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+    }
+
+    .sectionLabel{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius: 999px;
+      background: rgba(66,211,255,.10);
+      border: 1px solid rgba(66,211,255,.24);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing:.2px;
+    }
+
+    .qMeta{ color: var(--muted); font-size: 14px; }
+
+    .hintBox{
+      margin-top:10px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.10);
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .hintBox ul{ margin:8px 0 0; padding-left:18px; }
+
+    .qText{
+      padding: 16px 18px 6px;
+      font-size: 18px;
+      line-height: 1.45;
+      white-space: normal;
+    }
+    .qText .prompt{
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: .9px;
+    }
+    .qText .main{ font-size: 18px; }
+
+    /* MCQ options */
+    .options{
+      padding: 10px 18px 16px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width: 560px){ .options{grid-template-columns:1fr} }
+
+    .optBtn{
+      text-align:left;
+      padding: 14px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      color: var(--text);
+      font-size: 16px;
+      cursor:pointer;
+      transition: transform .08s ease, background .08s ease, border-color .08s ease;
+      user-select:none;
+    }
+    .optBtn:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.085);
+      border-color: rgba(255,255,255,.18);
+    }
+    .optBtn:disabled{ cursor:default; opacity:.75; transform:none; }
+
+    /* Spelling UI */
+    .spellWrap{
+      padding: 10px 18px 16px;
+    }
+    .blankLine{
+      margin-top: 8px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.10);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .blank{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 6px 10px;
+      border-radius: 14px;
+      border: 1px dashed rgba(255,255,255,.25);
+      background: rgba(255,255,255,.06);
+      min-width: 120px;
+      justify-content:center;
+      font-weight: 800;
+      letter-spacing: .8px;
+    }
+    .blank small{
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0;
+    }
+
+    .tiles{
+      margin-top: 12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .tileBtn{
+      border:1px solid var(--tileStroke);
+      background: var(--tile);
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 16px;
+      cursor:pointer;
+      font-size: 16px;
+      font-weight: 800;
+      min-width: 46px;
+      text-align:center;
+      user-select:none;
+      transition: transform .08s ease, background .08s ease;
+    }
+    .tileBtn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.085); }
+    .tileBtn:disabled{ opacity:.45; cursor:default; transform:none; }
+
+    .spellActions{
+      margin-top: 12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .feedback{
+      padding: 0 18px 12px;
+      min-height: 44px;
+      font-size: 15px;
+      color: var(--muted);
+    }
+    .feedback.good{color: var(--good)}
+    .feedback.bad{color: var(--bad)}
+
+    .controls{
+      padding: 0 18px 18px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .leftControls{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+
+    .btn{
+      border:1px solid rgba(255,255,255,.14);
+      background: var(--btn);
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 999px;
+      cursor:pointer;
+      font-size: 14px;
+      transition: background .1s ease, transform .08s ease;
+      user-select:none;
+    }
+    .btn:hover{ background: var(--btnHover) }
+    .btn:active{ transform: translateY(1px) }
+    .btn.primary{
+      border-color: rgba(66,211,255,.35);
+      background: rgba(66,211,255,.14);
+    }
+    .btn.primary:hover{ background: rgba(66,211,255,.20) }
+    .btn:disabled{ opacity:.55; cursor:default; transform:none; }
+
+    .side{ padding:18px; }
+    .side h3{ margin:0 0 10px; font-size: 18px; }
+    .side .small{
+      color: var(--muted);
+      font-size: 14px;
+      line-height:1.45;
+      margin-bottom: 12px;
+    }
+    .divider{ height:1px; background: rgba(255,255,255,.10); margin: 14px 0; }
+
+    .tipBox{
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 16px;
+      padding: 12px 12px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .tag{
+      display:inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--muted);
+      font-size: 12px;
+      margin-left: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" title="Logo">
+          <!-- Put your logo file in the SAME folder as this HTML and name it: logo.png -->
+          <img src="logo.png" alt="GA Logo" />
+        </div>
+        <div class="titleblock">
+          <h1>Unit 5 – The Breakfast Quest</h1>
+          <div class="sub">Online Practice · Meaning → Spelling in Context · No Word Bank</div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="pill">Progress: <strong id="progress">1/20</strong></div>
+        <div class="pill">Score: <strong id="score">0</strong></div>
+        <div class="pill">Mode: <strong id="mode">Main</strong></div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- MAIN CARD -->
+      <div class="card">
+        <div class="cardHeader">
+          <div class="kicker">
+            <div class="sectionLabel" id="sectionLabel">Part: Meaning</div>
+            <div class="qMeta" id="qMeta">Question 1 of 20</div>
+          </div>
+
+          <div class="hintBox" id="instructions">
+            How to play:
+            <ul>
+              <li><strong>Part 1 (Meaning):</strong> click the best answer.</li>
+              <li><strong>Part 2 (Spelling):</strong> click letters to spell the missing word.</li>
+              <li>Use <strong>Redo</strong> to try the spelling again (new letter order).</li>
+              <li>Use <strong>Hint</strong> if stuck.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="qText">
+          <div class="prompt" id="promptLine">Meaning</div>
+          <div class="main" id="questionText"></div>
+        </div>
+
+        <!-- MCQ -->
+        <div class="options" id="options"></div>
+
+        <!-- Spelling -->
+        <div class="spellWrap" id="spellWrap" style="display:none;">
+          <div class="blankLine" id="blankLine"></div>
+
+          <div class="tiles" id="tiles"></div>
+
+          <div class="spellActions">
+            <button class="btn" id="redoSpellBtn">Redo</button>
+            <button class="btn" id="clearSpellBtn">Clear</button>
+          </div>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+
+        <div class="controls">
+          <div class="leftControls">
+            <button class="btn" id="restartBtn">Restart</button>
+            <button class="btn" id="showHintBtn">Hint</button>
+          </div>
+          <button class="btn primary" id="nextBtn" disabled>Next</button>
+        </div>
+      </div>
+
+      <!-- SIDE CARD (NO word bank) -->
+      <div class="card">
+        <div class="side">
+          <h3>Teacher Tips <span class="tag">Unit 5</span></h3>
+          <div class="small">
+            This version hides the word bank so students must rely on memory and context.
+          </div>
+
+          <div class="tipBox">
+            <strong>Meaning questions:</strong> check basic understanding.<br><br>
+            <strong>Spelling questions:</strong> students must spell the missing word by clicking letters (no typing).<br><br>
+            <strong>Redo:</strong> clears the attempt and shuffles letters to prevent “pattern memorizing.”
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="small">
+            If you want, I can add:
+            <ul style="margin:8px 0 0; padding-left:18px;">
+              <li>Chinese (中文提示) toggle</li>
+              <li>timer per spelling question</li>
+              <li>more questions / fewer questions</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================
+    // Unit 5 Question Bank
+    // Part 1: Meaning (10)
+    // Part 2: Spelling in Context (10)  <-- fill-in-blank + spelling
+    // ============================================================
+
+    const questions = [
+      // -----------------------
+      // PART 1: MEANING (10)
+      // -----------------------
+      {
+        type: "mcq",
+        section: "Meaning",
+        word: "ingredients",
+        prompt: "Which word means:",
+        text: "The different foods you use to make a dish?",
+        options: ["ingredients","bark","steamship","plantation"],
+        answer: 0,
+        hint: "You need these before you cook or bake."
+      },
+      {
+        type: "mcq",
+        section: "Meaning",
+        word: "bark",
+        prompt: "Which word means:",
+        text: "The outside covering of a tree?",
+        options: ["bark","wheat","vanilla","cinnamon"],
+        answer: 0,
+        hint: "It protects the tree."
+      },
+      {
+        type: "mcq",
+        section: "Meaning",
+        word: "plantation",
+        prompt: "Which word means:",
+        text: "A large farm where people grow crops (often in rows)?",
+        options: ["plantation","steamship","spoil","ingredients"],
+        answer: 0,
+        hint: "Think of a big area growing one main crop."
+      },
+      {
+        type: "mcq",
+        section: "Meaning",
+        word: "steamship",
+        prompt: "Which word means:",
+        text: "A large boat that carries people or things across water?",
+        options: ["steamship","bark","cinnamon","wheat"],
+        answer: 0,
+        hint: "In the story, they travel across the ocean."
+      },
+      {
+        type: "mcq",
+        section: "Meaning",
+        word: "spoil",
+        prompt: "Which word means:",
+        text: "If food does this, it becomes bad and you should not eat it.",
+        options: ["spoil","gather","peel","introduce"],
+        answer: 0,
+        hint: "It can smell bad or look wrong."
+      },
+      {
+        type: "mcq",
+        section: "Meaning",
+        word: "gather",
+        prompt: "Which word means:",
+        text: "To collect things together in one place?",
+        options: ["gather","coax","peel","introduce"],
+        answer: 0,
+        hint: "You might do this with eggs or supplies."
+      },
+      {
+        type: "mcq",
+        section: "Meaning",
+        word: "introduce",
+        prompt: "Which word means:",
+        text: "To meet someone and tell them your name?",
+        options: ["introduce","spoil","steamship","bark"],
+        answer: 0,
+        hint: "You do this when you meet someone new."
+      },
+      {
+        type: "mcq",
+        section: "Meaning",
+        word: "peel",
+        prompt: "Which word means:",
+        text: "To take the outside skin off something (like fruit or bark)?",
+        options: ["peel","gather","spoil","plantation"],
+        answer: 0,
+        hint: "You might do this with oranges."
+      },
+      {
+        type: "mcq",
+        section: "Meaning",
+        word: "coax",
+        prompt: "Which word means:",
+        text: "To gently persuade someone (or an animal) to do something?",
+        options: ["coax","introduce","bark","ingredients"],
+        answer: 0,
+        hint: "In the story, they do this to the cow and the chicken."
+      },
+      {
+        type: "mcq",
+        section: "Meaning",
+        word: "cinnamon",
+        prompt: "Which word means:",
+        text: "A spice often used in sweet buns and desserts?",
+        options: ["cinnamon","vanilla","wheat","butter"],
+        answer: 0,
+        hint: "It can smell warm and sweet."
+      },
+
+      // -----------------------
+      // PART 2: SPELLING (10)
+      // Fill-in-the-blank + click letters to spell
+      // -----------------------
+      {
+        type: "spell",
+        section: "Spelling",
+        word: "butter",
+        prompt: "Spell the missing word:",
+        text: "“If it’s ______ you’re after, you’ll need to pack your bags.”",
+        hint: "It’s a dairy food you can spread on bread."
+      },
+      {
+        type: "spell",
+        section: "Spelling",
+        word: "vanilla",
+        prompt: "Spell the missing word:",
+        text: "“If it’s ______ you need, the finest comes from Madagascar.”",
+        hint: "A sweet flavor used in ice cream."
+      },
+      {
+        type: "spell",
+        section: "Spelling",
+        word: "wheat",
+        prompt: "Spell the missing word:",
+        text: "“If it’s flour you need, the heartiest ______ I know comes from France.”",
+        hint: "A grain used to make flour."
+      },
+      {
+        type: "spell",
+        section: "Spelling",
+        word: "sugarcane",
+        prompt: "Spell the missing word:",
+        text: "“Madagascar grows ______ and cinnamon, too.”",
+        hint: "A plant used to make sugar (no space)."
+      },
+      {
+        type: "spell",
+        section: "Spelling",
+        word: "ingredients",
+        prompt: "Spell the missing word:",
+        text: "“We head home before the ______ spoil.”",
+        hint: "You need these to make a recipe."
+      },
+      {
+        type: "spell",
+        section: "Spelling",
+        word: "bark",
+        prompt: "Spell the missing word:",
+        text: "“A small area of ______. I climb the tree and peel some off.”",
+        hint: "The outside of a tree."
+      },
+      {
+        type: "spell",
+        section: "Spelling",
+        word: "steamship",
+        prompt: "Spell the missing word:",
+        text: "“We coax the cow and the chicken onto a ______.”",
+        hint: "A ship/boat used for travel across water."
+      },
+      {
+        type: "spell",
+        section: "Spelling",
+        word: "spoil",
+        prompt: "Spell the missing word:",
+        text: "“We hurry home before the ingredients ______.”",
+        hint: "Food becomes bad."
+      },
+      {
+        type: "spell",
+        section: "Spelling",
+        word: "introduce",
+        prompt: "Spell the missing word:",
+        text: "“I ______ myself to my sister Sam, Farmer Ray, and the chicken.”",
+        hint: "You do this when you meet someone."
+      },
+      {
+        type: "spell",
+        section: "Spelling",
+        word: "gather",
+        prompt: "Spell the missing word:",
+        text: "“At the chicken coop, I ______ two smooth, brown eggs.”",
+        hint: "Collect together."
+      }
+    ];
+
+    // Ensure order: Meaning first, then Spelling
+    const orderedQuestions = [
+      ...questions.filter(q => q.section === "Meaning"),
+      ...questions.filter(q => q.section === "Spelling")
+    ];
+
+    // ============================================================
+    // State
+    // ============================================================
+    let index = 0;
+    let score = 0;
+    let allowNext = false;
+    let wrongIndexes = [];
+    let inReview = false;
+    let reviewPos = 0;
+
+    // Spelling state
+    let currentTyped = "";
+    let currentTiles = [];
+
+    // ============================================================
+    // Elements
+    // ============================================================
+    const progressEl = document.getElementById("progress");
+    const scoreEl = document.getElementById("score");
+    const modeEl = document.getElementById("mode");
+
+    const sectionLabelEl = document.getElementById("sectionLabel");
+    const qMetaEl = document.getElementById("qMeta");
+
+    const promptLineEl = document.getElementById("promptLine");
+    const questionTextEl = document.getElementById("questionText");
+
+    const optionsEl = document.getElementById("options");
+    const spellWrapEl = document.getElementById("spellWrap");
+    const blankLineEl = document.getElementById("blankLine");
+    const tilesEl = document.getElementById("tiles");
+
+    const feedbackEl = document.getElementById("feedback");
+
+    const nextBtn = document.getElementById("nextBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const showHintBtn = document.getElementById("showHintBtn");
+    const redoSpellBtn = document.getElementById("redoSpellBtn");
+    const clearSpellBtn = document.getElementById("clearSpellBtn");
+
+    // ============================================================
+    // Helpers
+    // ============================================================
+    function currentQuestion(){
+      if (!inReview) return orderedQuestions[index];
+      return orderedQuestions[wrongIndexes[reviewPos]];
+    }
+
+    function setTopStats(){
+      const total = orderedQuestions.length;
+      const shownIndex = inReview ? (reviewPos + 1) : (index + 1);
+      const shownTotal = inReview ? wrongIndexes.length : total;
+
+      progressEl.textContent = `${shownIndex}/${shownTotal}`;
+      scoreEl.textContent = score;
+      modeEl.textContent = inReview ? "Review" : "Main";
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function shuffle(arr){
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function normalizeWord(w){
+      // keep spelling strict but normalize case + remove spaces for target like sugarcane
+      return String(w).toLowerCase().replace(/\s+/g,"");
+    }
+
+    function disableMCQ(disabled){
+      const btns = optionsEl.querySelectorAll("button");
+      btns.forEach(b => b.disabled = disabled);
+    }
+
+    function disableTiles(disabled){
+      const btns = tilesEl.querySelectorAll("button");
+      btns.forEach(b => b.disabled = disabled);
+    }
+
+    // ============================================================
+    // Render
+    // ============================================================
+    function render(){
+      const q = currentQuestion();
+
+      // Labels
+      sectionLabelEl.textContent = `Part: ${q.section}`;
+      promptLineEl.textContent = q.section;
+
+      if (!inReview){
+        qMetaEl.textContent = `Question ${index + 1} of ${orderedQuestions.length}`;
+      } else {
+        qMetaEl.textContent = `Review ${reviewPos + 1} of ${wrongIndexes.length}`;
+      }
+
+      // Reset feedback and Next state
+      feedbackEl.className = "feedback";
+      feedbackEl.textContent = "";
+      allowNext = false;
+      nextBtn.disabled = true;
+
+      // Question display
+      questionTextEl.innerHTML = `
+        <div class="prompt">${escapeHtml(q.prompt)}</div>
+        <div class="main">${escapeHtml(q.text)}</div>
+      `;
+
+      // Switch UI by question type
+      if (q.type === "mcq"){
+        optionsEl.style.display = "grid";
+        spellWrapEl.style.display = "none";
+
+        optionsEl.innerHTML = "";
+        q.options.forEach((opt, i) => {
+          const b = document.createElement("button");
+          b.className = "optBtn";
+          b.textContent = opt;
+          b.onclick = () => chooseMCQ(i);
+          optionsEl.appendChild(b);
+        });
+
+      } else {
+        optionsEl.style.display = "none";
+        spellWrapEl.style.display = "block";
+
+        setupSpelling(q);
+      }
+
+      setTopStats();
+    }
+
+    // ============================================================
+    // MCQ logic
+    // ============================================================
+    function chooseMCQ(selected){
+      const q = currentQuestion();
+
+      if (selected === q.answer){
+        disableMCQ(true);
+        if (!inReview) score += 1;
+
+        feedbackEl.className = "feedback good";
+        feedbackEl.textContent = "Correct. Good work.";
+
+        allowNext = true;
+        nextBtn.disabled = false;
+        setTopStats();
+      } else {
+        feedbackEl.className = "feedback bad";
+        feedbackEl.textContent = `Not quite. Clue: ${q.hint}`;
+
+        if (!inReview){
+          const realIndex = index;
+          if (!wrongIndexes.includes(realIndex)) wrongIndexes.push(realIndex);
+        }
+      }
+    }
+
+    // ============================================================
+    // Spelling logic (click letters)
+    // ============================================================
+    function setupSpelling(q){
+      currentTyped = "";
+      currentTiles = buildTilesForWord(q.word);
+
+      // Build the sentence line with a blank
+      blankLineEl.innerHTML = buildBlankSentence(q.text, currentTyped);
+
+      // Render tiles
+      renderTiles();
+
+      // Enable spell buttons
+      redoSpellBtn.disabled = false;
+      clearSpellBtn.disabled = false;
+    }
+
+    function buildBlankSentence(sentence, typed){
+      // blank token: ______ (one chunk)
+      const safe = escapeHtml(sentence);
+      const shown = typed.length ? escapeHtml(typed.toUpperCase()) : "";
+      const blankHtml = `<span class="blank">${shown || "<small>click letters</small>"}</span>`;
+      return safe.replace("______", blankHtml);
+    }
+
+    function buildTilesForWord(word){
+      // We remove spaces for target (e.g., sugar cane -> sugarcane)
+      const target = normalizeWord(word);
+      const letters = target.split("");
+
+      // Add a few decoy letters (not too many, keep it kid-friendly)
+      // Choose from a small pool; ensure decoys are not always the same.
+      const pool = "aeiourstlncdpmgbhkfwy";
+      const decoyCount = Math.min(3, Math.max(1, Math.floor(target.length / 6)));
+      const decoys = [];
+      for (let i = 0; i < decoyCount; i++){
+        decoys.push(pool[Math.floor(Math.random() * pool.length)]);
+      }
+
+      return shuffle(letters.concat(decoys));
+    }
+
+    function renderTiles(){
+      tilesEl.innerHTML = "";
+      currentTiles.forEach((ch, idx) => {
+        const b = document.createElement("button");
+        b.className = "tileBtn";
+        b.textContent = ch.toUpperCase();
+        b.onclick = () => pickTile(idx);
+        tilesEl.appendChild(b);
+      });
+    }
+
+    function pickTile(tileIndex){
+      const q = currentQuestion();
+      const target = normalizeWord(q.word);
+
+      // Get tile button
+      const btns = tilesEl.querySelectorAll("button");
+      const btn = btns[tileIndex];
+      if (!btn || btn.disabled) return;
+
+      // Append letter and disable tile
+      const letter = currentTiles[tileIndex];
+      currentTyped += letter;
+      btn.disabled = true;
+
+      // Update blank line
+      blankLineEl.innerHTML = buildBlankSentence(q.text, currentTyped);
+
+      // If length reached target length, auto-check
+      if (currentTyped.length >= target.length){
+        checkSpelling();
+      }
+    }
+
+    function checkSpelling(){
+      const q = currentQuestion();
+      const target = normalizeWord(q.word);
+
+      const attempt = normalizeWord(currentTyped);
+
+      if (attempt === target){
+        disableTiles(true);
+        if (!inReview) score += 1;
+
+        feedbackEl.className = "feedback good";
+        feedbackEl.textContent = "Correct spelling. Nice!";
+
+        allowNext = true;
+        nextBtn.disabled = false;
+        setTopStats();
+      } else {
+        feedbackEl.className = "feedback bad";
+        feedbackEl.textContent = `Not quite. Clue: ${q.hint}`;
+
+        if (!inReview){
+          const realIndex = index;
+          if (!wrongIndexes.includes(realIndex)) wrongIndexes.push(realIndex);
+        }
+
+        // Keep them on this question; they can use Clear/Redo.
+        allowNext = false;
+        nextBtn.disabled = true;
+      }
+    }
+
+    function clearSpelling(){
+      const q = currentQuestion();
+      currentTyped = "";
+
+      // re-enable tiles but keep same tile order
+      const btns = tilesEl.querySelectorAll("button");
+      btns.forEach(b => b.disabled = false);
+
+      blankLineEl.innerHTML = buildBlankSentence(q.text, currentTyped);
+      feedbackEl.className = "feedback";
+      feedbackEl.textContent = "";
+    }
+
+    function redoSpelling(){
+      const q = currentQuestion();
+      currentTyped = "";
+      currentTiles = buildTilesForWord(q.word);
+
+      blankLineEl.innerHTML = buildBlankSentence(q.text, currentTyped);
+      renderTiles();
+
+      feedbackEl.className = "feedback";
+      feedbackEl.textContent = "";
+      allowNext = false;
+      nextBtn.disabled = true;
+    }
+
+    // ============================================================
+    // Navigation / Review
+    // ============================================================
+    function next(){
+      if (!allowNext) return;
+
+      if (!inReview){
+        index += 1;
+
+        if (index < orderedQuestions.length){
+          render();
+          return;
+        }
+
+        // End of main: go to review if needed
+        if (wrongIndexes.length > 0){
+          inReview = true;
+          reviewPos = 0;
+          render();
+          return;
+        }
+
+        finalScreen();
+      } else {
+        reviewPos += 1;
+
+        if (reviewPos < wrongIndexes.length){
+          render();
+          return;
+        }
+        finalScreen();
+      }
+    }
+
+    function finalScreen(){
+      sectionLabelEl.textContent = "Finished";
+      qMetaEl.textContent = "All done";
+
+      optionsEl.style.display = "none";
+      spellWrapEl.style.display = "none";
+
+      const total = orderedQuestions.length;
+      const missedWords = wrongIndexes.map(i => orderedQuestions[i].word);
+      const uniqueMissed = [...new Set(missedWords)];
+
+      let html = `You finished the practice.<br><br>
+        <strong>Your score:</strong> ${score} / ${total}.`;
+
+      if (uniqueMissed.length > 0){
+        html += `<br><br><strong>Words to review:</strong><ul>`;
+        uniqueMissed.forEach(w => html += `<li>${escapeHtml(w)}</li>`);
+        html += `</ul>`;
+      } else {
+        html += `<br><br><strong>Excellent.</strong> You got everything correct.`;
+      }
+
+      questionTextEl.innerHTML = `<div class="main">${html}</div>`;
+      promptLineEl.textContent = "Summary";
+
+      feedbackEl.className = "feedback";
+      feedbackEl.textContent = "";
+
+      nextBtn.disabled = true;
+      allowNext = false;
+
+      setTopStats();
+    }
+
+    function restart(){
+      index = 0;
+      score = 0;
+      allowNext = false;
+      wrongIndexes = [];
+      inReview = false;
+      reviewPos = 0;
+
+      currentTyped = "";
+      currentTiles = [];
+
+      render();
+    }
+
+    function showHint(){
+      const q = currentQuestion();
+      feedbackEl.className = "feedback";
+      feedbackEl.textContent = `Hint: ${q.hint}`;
+    }
+
+    // ============================================================
+    // Events
+    // ============================================================
+    nextBtn.addEventListener("click", next);
+    restartBtn.addEventListener("click", restart);
+    showHintBtn.addEventListener("click", showHint);
+
+    redoSpellBtn.addEventListener("click", () => {
+      const q = currentQuestion();
+      if (q.type !== "spell") return;
+      redoSpelling();
+    });
+
+    clearSpellBtn.addEventListener("click", () => {
+      const q = currentQuestion();
+      if (q.type !== "spell") return;
+      clearSpelling();
+    });
+
+    // Start
+    render();
+  </script>
+</body>
+</html>
